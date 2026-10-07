@@ -16,8 +16,8 @@ public class Usuario {
 
     private String senha;
 
-    @ManyToOne
-    @JoinColumn(name = "perfil_id")
+    @OneToOne
+    @JoinColumn(name = "perfil_id", unique = true)
     private Perfil perfil;
 
     public Usuario() {

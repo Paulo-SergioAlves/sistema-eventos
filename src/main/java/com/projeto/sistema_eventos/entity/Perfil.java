@@ -2,7 +2,6 @@ package com.projeto.sistema_eventos.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "perfis")
@@ -17,8 +16,8 @@ public class Perfil {
     private String descricao;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "perfil")
-    private List<Usuario> usuarios;
+    @OneToOne(mappedBy = "perfil")
+    private Usuario usuario;
 
     public Perfil() {
     }
@@ -47,11 +46,11 @@ public class Perfil {
         this.descricao = descricao;
     }
 
-    public List<Usuario> getUsuarios() {
-        return usuarios;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
