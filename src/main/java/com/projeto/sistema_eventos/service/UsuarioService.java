@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,8 +65,16 @@ public class UsuarioService {
         return usuarioRepository.save(usuarioExistente);
     }
 
+    @Transactional
     public void deletar(Long id) {
         Usuario usuario = buscarPorId(id);
+        Perfil perfil = usuario.getPerfil();
+
+        if (perfil != null) {
+            perfil.setUsuario(null);
+            usuario.setPerfil(null);
+        }
+
         usuarioRepository.delete(usuario);
     }
 }
