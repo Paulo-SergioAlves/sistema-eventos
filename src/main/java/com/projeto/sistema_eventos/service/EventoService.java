@@ -3,6 +3,8 @@ package com.projeto.sistema_eventos.service;
 import com.projeto.sistema_eventos.entity.Categoria;
 import com.projeto.sistema_eventos.entity.Evento;
 import com.projeto.sistema_eventos.repository.EventoRepository;
+import com.projeto.sistema_eventos.repository.InscricaoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +16,9 @@ public class EventoService {
 
     private final EventoRepository eventoRepository;
     private final CategoriaService categoriaService;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     public EventoService(
             EventoRepository eventoRepository,
@@ -30,7 +35,8 @@ public class EventoService {
     public Evento buscarPorId(Long id) {
         return eventoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Evento não encontrado"));
+                        HttpStatus.NOT_FOUND,
+                        "Evento não encontrado"));
     }
 
     private Categoria buscarCategoria(Evento evento) {
@@ -68,6 +74,13 @@ public class EventoService {
 
     public void deletar(Long id) {
         Evento evento = buscarPorId(id);
+
+        if (inscricaoRepository.existsByEvento_Id(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Remova as inscrições antes de excluir o evento");
+        }
+
         eventoRepository.delete(evento);
     }
 }

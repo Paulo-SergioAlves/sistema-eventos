@@ -2,12 +2,13 @@ package com.projeto.sistema_eventos.service;
 
 import com.projeto.sistema_eventos.entity.Perfil;
 import com.projeto.sistema_eventos.entity.Usuario;
+import com.projeto.sistema_eventos.repository.InscricaoRepository;
 import com.projeto.sistema_eventos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class UsuarioService {
 
     @Autowired
     private PerfilService perfilService;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
@@ -68,6 +72,13 @@ public class UsuarioService {
     @Transactional
     public void deletar(Long id) {
         Usuario usuario = buscarPorId(id);
+
+        if (inscricaoRepository.existsByUsuario_Id(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Remova as inscrições antes de excluir o usuário");
+        }
+
         Perfil perfil = usuario.getPerfil();
 
         if (perfil != null) {

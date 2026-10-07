@@ -16,4 +16,8 @@ public interface InscricaoRepository
             Long eventoId,
             Long id
     );
+
+    boolean existsByUsuario_Id(Long usuarioId);
+
+    boolean existsByEvento_Id(Long eventoId);
 }

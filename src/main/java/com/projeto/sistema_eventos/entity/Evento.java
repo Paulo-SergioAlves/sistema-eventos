@@ -1,6 +1,11 @@
 package com.projeto.sistema_eventos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Immutable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "eventos")
@@ -11,11 +16,17 @@ public class Evento {
     private Long id;
 
     private String nome;
+
     private String descricao;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @JsonIgnore
+    @Immutable
+    @ManyToMany(mappedBy = "eventos")
+    private List<Usuario> usuarios = new ArrayList<>();
 
     public Evento() {
     }
@@ -50,5 +61,9 @@ public class Evento {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
     }
 }
